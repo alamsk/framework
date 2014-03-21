@@ -1,0 +1,20 @@
+{
+    "name": "druto/framework",
+    "description": "Druto PHP Framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Biswarup Adhikari",
+            "email": "biswarupadhikari@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php":">=5.3"
+    },
+    "autoload":{
+        "psr-0":{
+            "Druto":"src/"
+        }
+    }
+}
