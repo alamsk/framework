@@ -5,15 +5,21 @@ class Druto
 {
 	private $appPath=null;
 	private $modulesPath=null;
-	function __construct($app_path)
+	function __construct()
 	{
-		$this->app_path=$app_path;
-		$this->modulesPath=$app_path.'/Modules';
+		$this->app_path=APPDIR;
+		$this->modulesPath=MODULESDIR;
 	}
 	public function init()
 	{
+		$this->loadGlobalConfigs();
 		$this->loadModulesRoute();
 		$this->processRoutes();
+	}
+	public function loadGlobalConfigs()
+	{
+		$globalConfigDir=$this->app_path.'/Configs';
+
 	}
 	public function loadModulesRoute()
 	{
@@ -57,20 +63,34 @@ class Druto
 					$classMethod=$tmp[1];
 				}
 				//echo "$class ||  $classMethod";
-				$obj=new $action();
+				$obj=new $class();
 				if(isset($obj->restfull) && $obj->restfull)
 				{
 					$classMethod=$method.$classMethod;
 				}
-				call_user_func_array(array($obj, $classMethod), array_shift($matches));
+				$params=array();
+				$tmpmatches=array_shift($matches);
+				foreach($matches as $tm)
+				{
+					if(is_array($tm))
+					{
+						foreach($tm as $m)
+						{
+							array_push($params,$m);
+						}
+					}
+					else
+					{
+						array_push($params,$tm);
+					}
+				}
+				call_user_func_array(array($obj, $classMethod),$params);
+				exit();
 				//$obj->$classMethod();
 				//print_r($matches);
 				//echo "Match";
 			}
-			else
-			{
-				echo "404 Page not Found";
-			}
 		}
+		echo "404 Page not Found";
 	}
 }
