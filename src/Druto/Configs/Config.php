@@ -17,8 +17,8 @@ class Config
 				self::$configs[$configKey]=require_once $configPath.'/'.$configfile;
 			}
 		}
-		echo '<pre>';
-		print_r(self::$configs);
+		//echo '<pre>';
+		//print_r(self::$configs);
 		return self::getConfigValue($key,$default);
 	}
 

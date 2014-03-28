@@ -54,8 +54,12 @@ class DataBase
 		{
 			$this->setQuery($sql);
 		}
-
-		return $this->conn->query($this->queries[count($this->queries) - 1]);
+		$result=$this->conn->query($this->queries[count($this->queries) - 1]);
+		if($result=== false)
+		{
+			trigger_error('Wrong SQL: ' . $this->queries[count($this->queries) - 1] . ' Error: ' . $this->conn->error, E_USER_ERROR);
+		}
+		return $result;
 	}
 
 	public function getQueries()
@@ -73,6 +77,49 @@ class DataBase
 		{
 			return $this->queries[count($this->queries) - 1];
 		}
+	}
+
+	public function fetchObject($sql=null)
+	{
+		if(isset($sql))
+		{
+			$this->setQuery($sql);
+		}
+		$result = $this->query();
+		$result->data_seek(0);
+		return $result->fetch_object();
+	}
+
+	public function fetchObjects($sql=null)
+	{
+		if(isset($sql))
+		{
+			$this->setQuery($sql);
+		}
+		$result = $this->query();
+		$result->data_seek(0);
+		$rows=array();
+		while($row=$result->fetch_object()){
+			array_push($rows,$row);
+		}
+		return $rows;
+	}
+
+	public function save($table,$data)
+	{
+		$columns='';
+		$values='';
+		foreach($data as $key=>$value)
+		{
+			$columns.='`'.$key.'`,';
+			$values.="'$value',";
+		}
+		$columns=rtrim($columns,',');
+		$values=rtrim($values,',');
+		$sql="INSERT INTO $table ($columns) VALUES($values)";
+		$this->setQuery($sql);
+		$this->query();
+		return $this->conn->insert_id;
 	}
 
 }
