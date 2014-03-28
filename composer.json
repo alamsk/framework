@@ -13,9 +13,6 @@
         "php":">=5.3"
     },
     "autoload":{
-        "classmap":[
-                "src/Druto/Alias"
-        ],
         "psr-0":{
             "Druto":"src/"
         }
