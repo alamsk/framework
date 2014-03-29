@@ -1,6 +1,7 @@
 <?php
 namespace Druto\Database;
 use Druto\Configs\Config as Config;
+use Druto\Exceptions\DataBaseException as DataBaseException;
 class DataBase
 {
 	private static $instance=null;
@@ -39,6 +40,9 @@ class DataBase
 			$dbConfig=Config::get('database.'.$default);
 			$this->conn=mysqli_connect($dbConfig['host'],$dbConfig['username'],$dbConfig['password'],$dbConfig['db']);
 		}
+		if (mysqli_connect_errno()) {
+			throw new DataBaseException('Database connection failed: '  . mysqli_connect_error(), E_USER_ERROR);
+		}
 		return $this;
 	}
 
@@ -57,7 +61,7 @@ class DataBase
 		$result=$this->conn->query($this->queries[count($this->queries) - 1]);
 		if($result=== false)
 		{
-			trigger_error('Wrong SQL: ' . $this->queries[count($this->queries) - 1] . ' Error: ' . $this->conn->error, E_USER_ERROR);
+			throw new DataBaseException('Wrong SQL: ' . $this->queries[count($this->queries) - 1] . ' Error: ' . $this->conn->error, E_USER_ERROR); 
 		}
 		return $result;
 	}
@@ -121,5 +125,21 @@ class DataBase
 		$this->query();
 		return $this->conn->insert_id;
 	}
+
+	public function update($table,$data,$where)
+	{
+		$setValues='';
+
+		foreach($data as $key=>$value)
+		{
+			$setValues.="`$key`='$value',";
+		}
+		$setValues=rtrim($setValues,',');
+		$sql="UPDATE $table SET $setValues WHERE $where";
+		$this->setQuery($sql);
+		$this->query();
+		return $this->conn->affected_rows;
+	}
+	
 
 }

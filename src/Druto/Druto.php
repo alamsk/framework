@@ -1,6 +1,7 @@
 <?php
 namespace Druto;
 use Druto\Routes\Route as Route;
+use Druto\Exceptions\RouteException as RouteException;
 class Druto
 {
 	private $appPath=null;
@@ -91,6 +92,6 @@ class Druto
 				//echo "Match";
 			}
 		}
-		echo "404 Page not Found";
+		throw new RouteException("404 Page not Found");
 	}
 }
