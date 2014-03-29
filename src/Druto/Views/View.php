@@ -1,5 +1,6 @@
 <?php
 namespace Druto\Views;
+use Druto\Exceptions\ViewException as ViewException;
 class View
 {
 	protected $data=array();
@@ -22,6 +23,10 @@ class View
 		else if(file_exists($viewPath.'.html'))
 		{
 			include $viewPath.'.html';
+		}
+		else
+		{
+			throw new ViewException("View $viewName not found");
 		}
 	}
 }
