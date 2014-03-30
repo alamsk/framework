@@ -1,17 +1,14 @@
 <?php
 namespace Druto\Views;
+use Druto\HTML\HTML as HTML;
 class Render
 {
 	protected $data=array();
-	protected $js=array();
-	protected $css=array();
 
 	public function __call($viewType, $arguments)
 	{
 		$viewTypeClass='Druto\Views\\'.ucwords($viewType);
 		$viewOBJ = new $viewTypeClass;
-		$viewOBJ->addJS($this->js);
-		$viewOBJ->addCSS($this->css);
 		if(isset($arguments[1]))
 		{
 			$arguments[1]=array_merge($arguments[1],$this->data);
@@ -21,12 +18,13 @@ class Render
 	
 	public function addJS($js)
 	{
-		array_push($this->js, $js);
+		
+		HTML::addJS($js);
 	}
 
 	public function addCSS($css)
 	{
-		array_push($this->css, $css);
+		HTML::addCSS($css);
 	}
 	
 	function __set($key,$value)

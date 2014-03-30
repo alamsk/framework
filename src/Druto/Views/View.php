@@ -6,8 +6,6 @@ class View
 	protected $data=array();
 	protected $viewName=null;
 	protected $content=null;
-	protected $js=array();
-	protected $css=array();
 	protected $viewPath=null;
 	protected $viewContent=null;
 
@@ -47,37 +45,5 @@ class View
 		$this->viewContent = ob_get_contents();
 		ob_end_clean();
 		return $this->viewContent;
-	}
-
-	public function addJS($js)
-	{
-
-		if(is_array($js))
-		{
-			foreach($js as $j)
-			{
-				array_push($this->js, $j);
-			}
-		}
-		else
-		{
-			array_push($this->js, $js);
-		}
-
-	}
-
-	public function addCSS($css)
-	{
-		if(is_array($css))
-		{
-			foreach($css as $c)
-			{
-				array_push($this->css, $c);
-			}
-		}
-		else
-		{
-			array_push($this->css, $css);
-		}
 	}
 }
