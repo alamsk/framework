@@ -42,7 +42,7 @@ class Druto
 
 	public function processRoutes()
 	{
-		echo '<pre>';
+		//echo '<pre>';
 		$rURI='/'.trim($_SERVER['REQUEST_URI'],'/');
 		$tmp=explode('?',$rURI);
 		$rURI=$tmp[0];
