@@ -53,8 +53,9 @@ class Druto
 
 		$method=strtolower($_SERVER['REQUEST_METHOD']);
 		$routes=Route::getRoutes($method);
-
-		//print_r($routes);
+		$widgetAjaxRoutes=array();
+		$widgetAjaxRoutes["/widgetajax/(Widgets|Modules)/([a-zA-Z0-9_-]+)/([a-zA-z0-9-_./]+)"]='Druto\Widgets\Widget@handleWidgetAjaxRequest';
+		$routes=array_merge($widgetAjaxRoutes,$routes);
 		foreach($routes as $pattern=>$action)
 		{
 			if (preg_match_all('~^' . $pattern . '+$~i', $rURI, $matches))
@@ -101,7 +102,7 @@ class Druto
 					
 					if(!method_exists($obj,$classMethod))
 					{
-						throw new ControllerException("Method $classMethod not exist in ".$class);
+						throw new ControllerException("Method $classMethod() not exist in ".$class);
 					}
 
 					call_user_func_array(array($obj, $classMethod),$params);
