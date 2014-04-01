@@ -48,7 +48,7 @@ class Druto
 		$rURI=$tmp[0];
 		$parts=explode('/',$rURI);
 		$classMethod=$parts[count($parts) - 1 ];
-		
+
 		$method=strtolower($_SERVER['REQUEST_METHOD']);
 		$routes=Route::getRoutes($method);
 
@@ -57,18 +57,6 @@ class Druto
 		{
 			if (preg_match_all('~^' . $pattern . '+$~i', $rURI, $matches))
 			{
-				$tmp=explode('@',$action);
-				$class=$tmp[0];
-				if(isset($tmp[1]))
-				{
-					$classMethod=$tmp[1];
-				}
-				//echo "$class ||  $classMethod";
-				$obj=new $class();
-				if(isset($obj->restfull) && $obj->restfull)
-				{
-					$classMethod=$method.$classMethod;
-				}
 				$params=array();
 				$tmpmatches=array_shift($matches);
 				foreach($matches as $tm)
@@ -85,7 +73,28 @@ class Druto
 						array_push($params,$tm);
 					}
 				}
-				call_user_func_array(array($obj, $classMethod),$params);
+
+				if(is_object($action) && is_callable($action))
+				{
+					call_user_func_array($action,$params);
+				}
+				else
+				{
+					$tmp=explode('@',$action);
+					$class=$tmp[0];
+					if(isset($tmp[1]))
+					{
+						$classMethod=$tmp[1];
+					}
+					//echo "$class ||  $classMethod";
+					$obj=new $class();
+					if(isset($obj->restfull) && $obj->restfull)
+					{
+						$classMethod=$method.$classMethod;
+					}
+
+					call_user_func_array(array($obj, $classMethod),$params);
+				}
 				exit();
 				//$obj->$classMethod();
 				//print_r($matches);
