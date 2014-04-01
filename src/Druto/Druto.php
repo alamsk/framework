@@ -1,5 +1,7 @@
 <?php
 namespace Druto;
+use Druto\Exceptions\ControllerException;
+
 use Druto\Routes\Route as Route;
 use Druto\Exceptions\RouteException as RouteException;
 class Druto
@@ -82,6 +84,10 @@ class Druto
 				{
 					$tmp=explode('@',$action);
 					$class=$tmp[0];
+					if(!class_exists($class))
+					{
+						throw new ControllerException($class." Not Found");
+					}
 					if(isset($tmp[1]))
 					{
 						$classMethod=$tmp[1];
@@ -91,6 +97,11 @@ class Druto
 					if(isset($obj->restfull) && $obj->restfull)
 					{
 						$classMethod=$method.$classMethod;
+					}
+					
+					if(!method_exists($obj,$classMethod))
+					{
+						throw new ControllerException("Method $classMethod not exist in ".$class);
 					}
 
 					call_user_func_array(array($obj, $classMethod),$params);
